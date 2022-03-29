@@ -956,7 +956,9 @@ $(document).ready(function() {
       chrome.storage.local.get(['userInfo'], function(result) {
         var userInfo = result.userInfo
         if (userInfo && userInfo.vid) {
-          fetch(`https://i.weread.qq.com/readdetail?baseTimestamp=${getMondayTimestamp()}&count=1&type=0`).then(function(resp) {
+          fetch(`https://i.weread.qq.com/readdetail?baseTimestamp=${getMondayTimestamp()}&count=1&type=0`,{
+            credentials: 'include'
+          }).then(function(resp) {
             return resp.json()
           }).then(function(data) {
             if (data && data.datas && data.datas.length > 0) {
