@@ -3,28 +3,39 @@
   <head>
     <meta charset="utf-8">
     <style>
-      body {
-        font-size: 12px;
-      }
       a {
         text-decoration: none; cursor: pointer;
       }
-      .divider {
-        width: 100%; height: 1px; background-color: #e4e4e4; margin: 10px 0;
-      }
     </style>
   </head>
-  <body>
+  <body style="font-size: 12px;">
+    <div id="webook_toast" style="position: absolute; background-color: #f78d8d; color: #fff; border-radius: 6px; padding: 2px 10px; display: none; text-align: center; margin: 0 auto;left:50%;transform: translateX(-50%);"></div>
     <div style="display: flex; flex-direction: column; width: 300px; padding: 0; margin: 0;">
       <a href="popup.html" style="font-weight: bold; font-size: 14px; letter-spacing: 0.5px; color: #4a4a4a;">微信读书助手 <span id="version" style="font-weight: normal; color: gray; font-size: 12px; letter-spacing: 0;"></span></a>
+      <div style="width: 100%; height: 1px; background-color: #e4e4e4; margin: 10px 0;"></div>
 
-      <div class="divider"></div>
       <div id="webook_user_info"></div>
 
-      <div style="margin-top: 10px; display: flex; flex-direction: column; background-color: #f4f4f4; padding: 10px;">
-        <a href="https://github.com/tenpiece/weread_helper_extension" style="cursor: pointer; color: #259;" target="_blank">GitHub</a>
-        <hr/>
-        <div id="clearme" style="cursor: pointer; color: #259;">还原全部设置</div>
+      <!-- <div style="margin-top: 20px; display: flex; flex-direction: row;">
+        <div id="sta_btn" style="cursor: pointer; color: #259;">提交周六组队</div>
+        <div style="color: gray; margin-left: 10px;">微信读书网站上"组队助手"有更多功能</div>
+      </div> -->
+
+      <div style="margin-top: 10px; display: flex; flex-direction: row;">
+        <a href="https://weread.qnmlgb.tech?from=webook" target="_blank" style="text-decoration: none; cursor: pointer; color: #259;">前往组队网站</a>
+        <a href="https://weread.qq.com" target="_blank" style="text-decoration: none; cursor: pointer; color: #259; margin-left: 10px;">微信读书官网</a>
+      </div>
+
+      <div style="margin-top: 10px; display: flex; flex-direction: row;">
+        <a href="https://github.com/ellipse42/weread_helper_extension/issues" target="_blank" style="text-decoration: none; cursor: pointer; color: #259;">反馈</a>
+        <a href="setting.html" style="text-decoration: none; cursor: pointer; color: #259; margin-left: 10px;">播放器设置</a>
+        <div id="clearme" style="cursor: pointer; color: #259; margin-left: 10px">清理设置</div>
+      </div>
+
+      <!-- <div id="show_assist" style="margin-top: 10px; text-decoration: none; cursor: pointer; color: #259;"> 展示组队助手 </div> -->
+
+      <div id="announcement" style="margin-top: 10px; background-color: #f8f9fa; padding: 10px;">
+
       </div>
     </div>
 
