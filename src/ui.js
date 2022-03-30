@@ -304,7 +304,6 @@ async function fetchNotes(bookIds) {
 
   }
 
-  window.alert('导出所有笔记完成');
   console.log(' 298: all notes export done.')
 }
 
@@ -1022,8 +1021,6 @@ $(document).ready(function() {
           }
         })
       }
-      console.log(initdata.shelf)
-      console.log(userShelf)
       if (userShelf) {
         chrome.storage.local.set({'userShelf': userShelf}, function() {})
       }
