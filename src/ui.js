@@ -1000,14 +1000,32 @@ $(document).ready(function() {
 
     fetch('https://weread.qq.com/web/shelf').then(function(resp) {return resp.text()}).then(function(data) {
       var initdata = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
+      let userShelf = {
+        books:[]
+      }
       if (initdata.shelf.books) {
         var books = initdata.shelf.books
-        for(var i=0;i<books.length;i++) {
-          shelfdict[make_me_happy(books[i].bookId)] = books[i]
-        }
+        books.forEach(book => {
+          shelfdict[make_me_happy(book.bookId)] = book
+          userShelf.books.push(book)
+        })
       }
-      if (initdata.shelf) {
-        chrome.storage.local.set({'userShelf': initdata.shelf}, function() {})
+      if (initdata.shelf.archive) {
+        var archive = initdata.shelf.archive
+        archive.forEach(item => {
+          let allBooks = item.allBooks
+          if (allBooks) {
+            allBooks.forEach(book => {
+              shelfdict[make_me_happy(book.bookId)] = book
+              userShelf.books.push(book)
+            })
+          }
+        })
+      }
+      console.log(initdata.shelf)
+      console.log(userShelf)
+      if (userShelf) {
+        chrome.storage.local.set({'userShelf': userShelf}, function() {})
       }
     })
   }
