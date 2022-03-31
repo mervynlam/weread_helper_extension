@@ -687,7 +687,16 @@ $(document).ready(function() {
   }
   `
 
+  let _css2 = `
+    *{
+      font-family : "TsangerJinKai03","Kaiti","Microsoft YaHei" !important;
+    }
+  `
+
   $('body').prepend(`<style>${_css}</style>`)
+  if (pathname.startsWith(bookPage)){
+    $('body').prepend(`<style>${_css2}</style>`)
+  }
 
   // 助手Bar
   var rightColor = '#595a5a'
