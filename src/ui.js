@@ -729,7 +729,7 @@ $(document).ready(function() {
       <div class="wr_dialog_mask"></div>
       <div class="wr_dialog_container wr_dialog_bg">
         <a href="javascript:" class="wr_dialog_closeButton webook_dialog_closeButton">close</a>
-        <div style="width: 200px;">
+        <div style="width: 220px;">
           <div style="margin-top: 40px; margin-bottom: 40px; display: flex; padding: 5px; font-size: 14px; align-items: center; flex-direction: column;">
 
             <div class="webook_box_btn" id="webook_export_note" style="width: 140px; background-color: #2196F3; color: white; padding: 3px 10px; margin: 5px; cursor: pointer; border-radius: 4px;">
@@ -738,6 +738,7 @@ $(document).ready(function() {
 
             <div style="margin-top: 10px; color: #c7c6c6; font-size: 13px;">设置背景</div>
             <div style="display: flex; flex-direction: row; margin-top: 5px;">
+              <div id="webook_ui_default" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px; line-height:24px">默认</div>
               <div id="webook_ui_0" style="background-color: #e2e2e4; width: 24px; height: 24px; margin: 0 5px; cursor: pointer;" data-color="#e2e2e4"></div>
               <div id="webook_ui_1" style="background-color: #e1dac7; width: 24px; height: 24px; margin: 0 5px; cursor: pointer;" data-color="#e1dac7"></div>
               <div id="webook_ui_2" style="background-color: #C7EDCC; width: 24px; height: 24px; margin: 0 5px; cursor: pointer;" data-color="#C7EDCC"></div>
@@ -884,6 +885,26 @@ $(document).ready(function() {
       $('#webook_screen_2_0').click(function() {
         setScreen(_def_max_width * 2.0)
         chrome.storage.local.set({'webook_screen': '2.0'})
+      })
+      
+      $("#webook_ui_default").click(function(e) {
+        console.log('webook_ui_default')
+        chrome.storage.local.remove('webook_ui')
+        $('html body').css('background-color', '')
+        var _w = $('.readerControls_item.white')
+        if (_w.length > 0) {
+          $('.readerChapterContent').css('background-color', '#1f2022')
+          $('.app_content').css('background-color', '#1f2022')
+          $('.readerTopBar').css('background-color', '#1f2022')
+          $('.wr_canvasContainer canvas').css('background-color', '#1f2022')
+          $('#webook_master span').css('color', '#fff')
+        } else {
+          $('.readerChapterContent').css('background-color', '#fff')
+          $('.app_content').css('background-color', '#fff')
+          $('.readerTopBar').css('background-color', '#fff')
+          $('.wr_canvasContainer canvas').css('background-color', '#fff')
+          $('#webook_master span').css('color', '#595a5a')
+        }
       })
 
       $('#webook_ui_0').click(function(e) {
