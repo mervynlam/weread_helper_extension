@@ -104,11 +104,107 @@ function showToast(content) {
 }
 
 
+function _zudui(callback, force) {
+  let forceVid = null
+
+  fetch('https://weread.qq.com/wrpage/huodong/abtest/zudui').then(function (resp) {
+    return resp.text()
+  }).then(function (data) {
+    let doc = $(data)
+    let memberCount = 0
+    doc.find('.members_list > div.wr_avatar').each(function (idx) {
+      let vid = $(this).data('vid')
+      if (vid) {
+        memberCount += 1
+      }
+      if (idx == 0 && vid) {
+        forceVid = vid
+      }
+    })
+    if (force && memberCount != 5) {
+      if (!forceVid) {
+        let _m = data.match(/data \+= '&vid=' \+ encodeURIComponent\('(.*)'\)/)
+        if (_m) {
+          forceVid = _m[1]
+        } else {
+          _m = ak.match(/<script>config\.vid = \+'(.*)'<\/script>/)
+          if (_m) {
+            forceVid = _m[1]
+          }
+        }
+      }
+        if (forceVid) {
+          console.log('**forceVid**', forceVid)
+          $.ajax({
+            method: "POST",
+            url: "https://weread.qnmlgb.tech/submit?ref=chrome",
+            data: JSON.stringify({'url': forceVid.toString()}),
+            contentType: "application/json",
+          }).done(function( msg ) {
+            console.log('**resp**', msg)
+            callback('提交成功，耐心等待')
+          })
+        } else {
+          callback('💥 请登录')
+        }
+      }
+
+      if (memberCount == 0) {
+        let _m = data.match(/csrfToken:.*'(.*)'/)
+        if (_m) {
+          console.log('csrfToken', _m[1])
+          fetch('https://weread.qq.com/wrpage/infinite/lottery/create', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `csrfToken=${_m[1]}`,
+          }).then(function(resp) {
+            return resp.json()
+          }).then(function(data) {
+            console.log('*data**', data)
+            if (data && data.result && data.result.humanMessage) {
+              callback('💥 需先在微信读书网站（weread.qq.com）上登录')
+            }
+            let _obj = data
+            if (_obj && Number.isInteger(_obj.lackMembers)) {
+              if (_obj.lackMembers == 0) {
+                callback('👏 已组完')
+              } else {
+                callback(`🐼 还差 ${_obj.lackMembers} 个`)
+              }
+            }
+          }).catch((err) => {
+            callback('微信读书服务器故障')
+          })
+        }
+      } else if (memberCount == 5) {
+        callback('👏 已组完')
+      } else {
+        callback(`🐼 还差 ${5 - memberCount} 个`)
+      }
+  }).catch(function(err) {
+    callback('微信读书服务器故障')
+  })
+}
+
 $(function() {
   $('#version').text(version)
   $('#clearme').click(function() {
     chrome.storage.local.clear()
     window.location.href = '/src/popup/popup.html'
+  })
+  $('#sta_btn').click(_=>{
+    _zudui((msg) => {
+      $('#group_status').text(msg)
+      $('#group_status').show()
+    },'force')
+  })
+  $('#group_info_btn').click(_=>{
+    _zudui((msg) => {
+      $('#group_status').text(msg)
+      $('#group_status').show()
+    })
   })
 })
 
