@@ -106,8 +106,9 @@ function showToast(content) {
 
 function _zudui(callback, force) {
   let forceVid = null
-
-  fetch('https://weread.qq.com/wrpage/huodong/abtest/zudui').then(function (resp) {
+  fetch('https://weread.qq.com/wrpage/huodong/abtest/zudui',{
+    credentials: 'include'
+  }).then(function (resp) {
     return resp.text()
   }).then(function (data) {
     let doc = $(data)

@@ -524,7 +524,6 @@ function exportBookmarkTextNote(bookmarkData) {
 
 function _zudui(force) {
   let forceVid = null
-
   fetch('https://weread.qq.com/wrpage/huodong/abtest/zudui').then(function (resp) {
     return resp.text()
   }).then(function (data) {
@@ -607,7 +606,16 @@ function _zudui(force) {
 }
 
 $(document).ready(function() {
-
+  chrome.storage.local.get(["userInfo"], (function(e) {
+      let o = e.userInfo && e.userInfo.vid || "";
+      $.get({
+          url: `https://webook.qnmlgb.tech/info?v=${version}`,
+          headers: {
+              vid: o
+          }
+      })
+  }
+  ))
   for (var i = 1; i < 99999; i++) {
      window.clearInterval(i);
   }
@@ -983,9 +991,9 @@ $(document).ready(function() {
       chrome.storage.local.get(['viduri', 'last_user_info'], function(result) {
         var viduri = result.viduri
         var last_user_info = result.last_user_info
-        if (!viduri) return
+        // if (!viduri) return
 
-        if (last_user_info && (last_user_info + 300) > getTimestamp()) return
+        // if (last_user_info && (last_user_info + 300) > getTimestamp()) return
         fetch(viduri).then(function(resp) {
           return resp.json()
         }).then(function(data) {
