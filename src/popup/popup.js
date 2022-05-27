@@ -106,8 +106,11 @@ function showToast(content) {
 
 function _zudui(callback, force) {
   let forceVid = null
-  fetch('https://weread.qq.com/wrpage/huodong/abtest/zudui',{
-    credentials: 'include'
+  fetch(`https://weread.qq.com/wrpage/huodong/abtest/zudui`,{
+    credentials: 'include',
+    referrer:'https://weread.qq.com/',
+    mode: "cors", 
+    referrerPolicy:"strict-origin-when-cross-origin"
   }).then(function (resp) {
     return resp.text()
   }).then(function (data) {
@@ -160,6 +163,7 @@ function _zudui(callback, force) {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: `csrfToken=${_m[1]}`,
+            referrer:'https://weread.qq.com/',
           }).then(function(resp) {
             return resp.json()
           }).then(function(data) {
@@ -206,6 +210,31 @@ $(function() {
       $('#group_status').text(msg)
       $('#group_status').show()
     })
+  })
+  $('#copy_url').click(_=>{
+    let today = new Date()
+    let day = today.getDay()
+    let oneDayMill = 24*60*60*1000
+    let saturday = new Date(today - oneDayMill * (7-(6-day)))
+    let year = saturday.getFullYear()
+    let month = ("0"+(saturday.getMonth()+1)).slice(-2)
+    let date = saturday.getDate()
+    let url = `https://weread.qq.com/wrpage/infinite/lottery?collageId=285638608_${year}${month}${date}&shareVid=285638608`
+    let url2 = `https://weread.qq.com/wrpage/huodong/abtest/zudui?collageId=285638608_${year}${month}${date}&shareVid=285638608&wrRefCgi=`
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url);
+        $('#group_status').text("已复制")
+        $('#group_status').show()
+        window.open(`https://weread.qnmlgb.tech?from=webook`)
+        fetch(url2,{
+          credentials: 'include'
+        }).then(function (resp) {
+          console.log(resp)
+          return resp.text()
+        }).then(function (data) {
+          console.log(data)
+        })
+    }
   })
 })
 
