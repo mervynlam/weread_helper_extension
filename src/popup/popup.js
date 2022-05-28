@@ -215,7 +215,8 @@ $(function() {
     let today = new Date()
     let day = today.getDay()
     let oneDayMill = 24*60*60*1000
-    let saturday = new Date(today - oneDayMill * (7-(6-day)))
+    let minus = day == 6 ? 0 : 7-(6-day)
+    let saturday = new Date(today - oneDayMill * minus)
     let year = saturday.getFullYear()
     let month = ("0"+(saturday.getMonth()+1)).slice(-2)
     let date = saturday.getDate()
