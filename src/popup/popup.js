@@ -219,7 +219,7 @@ $(function() {
     let saturday = new Date(today - oneDayMill * minus)
     let year = saturday.getFullYear()
     let month = ("0"+(saturday.getMonth()+1)).slice(-2)
-    let date = saturday.getDate()
+    let date = ("0"+(saturday.getDate())).slice(-2)
     let url = `https://weread.qq.com/wrpage/infinite/lottery?collageId=285638608_${year}${month}${date}&shareVid=285638608`
     let url2 = `https://weread.qq.com/wrpage/huodong/abtest/zudui?collageId=285638608_${year}${month}${date}&shareVid=285638608&wrRefCgi=`
     if (navigator.clipboard) {
