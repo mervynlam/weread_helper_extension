@@ -744,6 +744,10 @@ $(document).ready(function() {
               导出笔记到剪贴板
             </div>
 
+            <a class="webook_box_btn" target="_blank" id="webook_douban" style="width: 140px; background-color: #919da7; color: white; padding: 3px 10px; margin: 5px; cursor: pointer; border-radius: 4px;">
+              豆瓣评分
+            </a>
+
             <div style="margin-top: 10px; color: #c7c6c6; font-size: 13px;">设置背景</div>
             <div style="display: flex; flex-direction: row; margin-top: 5px;">
               <div id="webook_ui_default" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px; line-height:24px">默认</div>
@@ -771,7 +775,7 @@ $(document).ready(function() {
 
 
   if (pathname.startsWith(bookPage)) {
-
+      
     setTimeout(function() {
       $('.readerControls').prepend(_right_nav)
       $('body').append(_webookBox)
@@ -833,6 +837,30 @@ $(document).ready(function() {
       $('#webook_player_stop').click(function() {
         chrome.runtime.sendMessage({text: '', action: 'stopText'}, function(resp) {})
       })
+
+      function getBook(){
+        let vid = ''
+        chrome.storage.local.get(["userInfo"], (function(e) {
+          vid = e.userInfo && e.userInfo.vid || "";
+        }));
+        let bookId = pathname.slice(pathname.lastIndexOf('/')+1)
+        console.log(bookId)
+        $.get({
+          url: `https://webook.qnmlgb.tech/mp2db?code=${bookId}`,
+          headers: {
+            vid: vid,
+            version: version
+          }
+        }).then(res => {
+          if (res.db) {
+            $("#webook_douban").text(`豆瓣评分 ${res.db.rating.num}`)
+            $("#webook_douban").attr("href", res.db.url)
+          } else {
+            $("#webook_douban").hide()
+          }
+        })
+      }
+      getBook()
 
       chrome.storage.local.get(['webook_ui'], function(result) {
         let webook_ui = result.webook_ui
