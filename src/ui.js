@@ -790,18 +790,28 @@ $(document).ready(function() {
       })
 
       $('#webook_export_note').click(function(idx, ele) {
-        var header = $('title').text().split('-').slice(0, 2).join('\n') + '\n\n'
+        //var header = $('title').text().split('-').slice(0, 2).join('\n') + '\n\n'
+        var info = $('title').text().split('-').slice(0, 2)
+        var title = info[0]
+        var author = info[1]
+        var dbHref = $("#webook_douban").attr('href')
+
+        if (dbHref && dbHref.length > 0) {
+          title = `[${title}](${dbHref})`
+        }
+        var header = `## ${title}\n**${author}**\n\n`
+
         var txt = ''
         $('.readerNoteList > .sectionListItem').each(function() {
           var titleobj = $(this).find('.sectionListItem_title')
           if (titleobj.length > 0) {
-            txt += `\n◆ ${titleobj[0].innerText}\n`
+            txt += `\n### ${titleobj[0].innerText}\n`
           }
 
           var noteobj = $(this).find('.sectionListItem_content')
           if (noteobj.length > 0) {
             for(var i=0; i<noteobj.length; i++) {
-              txt += `\n>> ${noteobj[i].innerText}\n`
+              txt += `\n> ${noteobj[i].innerText}\n`
             }
           }
         })
@@ -811,8 +821,11 @@ $(document).ready(function() {
           return
         }
 
-        copy(header + txt, 'text/plain;charset=UTF-8')
-        showToast('👏 已成功导出笔记到剪贴板')
+        //copy(header + txt, 'text/plain;charset=UTF-8')
+        //showToast('👏 已成功导出笔记到剪贴板')
+        showToast('👏 已成功导出')
+        
+        download(header + txt, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
       })
 
       $('#webook_player').click(function() {
@@ -844,7 +857,6 @@ $(document).ready(function() {
           vid = e.userInfo && e.userInfo.vid || "";
         }));
         let bookId = pathname.slice(pathname.lastIndexOf('/')+1)
-        console.log(bookId)
         $.get({
           url: `https://webook.qnmlgb.tech/mp2db?code=${bookId}`,
           headers: {
