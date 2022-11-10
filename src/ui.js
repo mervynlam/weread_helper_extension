@@ -811,7 +811,38 @@ $(document).ready(function() {
           var noteobj = $(this).find('.sectionListItem_content')
           if (noteobj.length > 0) {
             for(var i=0; i<noteobj.length; i++) {
-              txt += `\n> ${noteobj[i].innerText}\n`
+              let rate = ''
+              let note = ''
+              let underline = ''
+              //整书评价
+              let rateobj = $(noteobj[i]).find('.wr_ratingLevelBar_text')
+              if (rateobj.length > 0) {
+                rate = rateobj[0].innerText
+              }
+              //有笔记的划线划线
+              let abstract = $(noteobj[i]).find('.abstract')
+              if (abstract.length > 0) {
+                note = abstract[0].innerText
+              }
+              //划线
+              let underlineobj = $(noteobj[i]).find('.text')
+              if (underlineobj.length > 0) {
+                underline = underlineobj[0].innerText
+              }
+
+              if (rate.length > 0) {
+                txt += `\n> ⭐ ${rate}\n`
+                if (underline.length > 0) {
+                  txt += ` 🎙 ${underline}\n`
+                }
+              } else if (note.length > 0) {
+                txt += `\n> 🔖 ${note}\n`
+                if (underline.length > 0) {
+                  txt += ` 🎙 ${underline}\n`
+                }
+              } else if (underline.length > 0) {
+                txt += `\n> 🔖 ${underline}\n`
+              }
             }
           }
         })
@@ -821,11 +852,11 @@ $(document).ready(function() {
           return
         }
 
-        //copy(header + txt, 'text/plain;charset=UTF-8')
+        // copy(header + txt, 'text/plain;charset=UTF-8')
         //showToast('👏 已成功导出笔记到剪贴板')
+        download(header + txt, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
         showToast('👏 已成功导出')
         
-        download(header + txt, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
       })
 
       $('#webook_player').click(function() {
