@@ -211,7 +211,7 @@ $(function() {
       $('#group_status').show()
     })
   })
-  $('#copy_url').click(_=>{
+  $('#copy_url').click(async  _=>{
     let today = new Date()
     let day = today.getDay()
     let oneDayMill = 24*60*60*1000
@@ -223,18 +223,12 @@ $(function() {
     let url = `https://weread.qq.com/wrpage/infinite/lottery?collageId=285638608_${year}${month}${date}&shareVid=285638608`
     let url2 = `https://weread.qq.com/wrpage/huodong/abtest/zudui?collageId=285638608_${year}${month}${date}&shareVid=285638608&wrRefCgi=`
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(url);
         $('#group_status').text("已复制")
         $('#group_status').show()
         window.open(`https://weread.qnmlgb.tech?from=webook`)
-        fetch(url2,{
-          credentials: 'include'
-        }).then(function (resp) {
-          console.log(resp)
-          return resp.text()
-        }).then(function (data) {
-          console.log(data)
-        })
+    } else {
+      alert("not support!")
     }
   })
 })
