@@ -629,12 +629,6 @@ function addAutoPage() {
       left: 20px;
       cursor: pointer;
     }
-    #auto-page.start{
-      content:'开始';
-    }
-    #auto-page.start{
-      content:'停止';
-    }
     #progress-outer{
       display:none;
       height: 5px;
@@ -700,6 +694,13 @@ function addAutoPage() {
       $("#progress-outer").hide();
     }
 
+    function stop(){
+      deleteProgressTimer();
+      $("#auto-page").addClass("start");
+      $("#auto-page").removeClass("stop");
+      $("#auto-page").text("开始");
+    }
+
     $("#auto-page").on("mouseenter", function() {
       wait = window.localStorage.getItem("webook_speed") || 30;
       $("#speed-tips").text(wait);
@@ -732,7 +733,7 @@ function addAutoPage() {
           if (wsy + dch >= dsh - 10) {
             clearInterval(timer);
             clearInterval(window.timer);
-            deleteProgressTimer()
+            stop()
           } else {
             let y = wsy + Math.ceil(dch / 2);
             y = y + dch >= dsh ? dsh - dch : y;
@@ -744,10 +745,7 @@ function addAutoPage() {
         $(this).addClass("stop");
         $(this).text("停止");
       } else {
-        deleteProgressTimer()
-        $(this).addClass("start");
-        $(this).removeClass("stop");
-        $(this).text("开始");
+        stop()
       }
     });
 }
