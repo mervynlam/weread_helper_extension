@@ -605,6 +605,153 @@ function exportBookmarkTextNote(bookmarkData) {
 //   })
 // }
 
+//增加自动翻页
+function addAutoPage() {
+  let _cssProgress = `
+    #auto-page{
+      font-size: 12px;
+      line-height: 1.5;
+      text-size-adjust: none;
+      user-select: none;
+      color: rgb(74, 122, 176);
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.03);
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      background-color: rgb(255, 255, 255);
+      box-shadow: rgba(0, 25, 104, 0.1) 0px 8px 32px;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      cursor: pointer;
+    }
+    #auto-page.start{
+      content:'开始';
+    }
+    #auto-page.start{
+      content:'停止';
+    }
+    #progress-outer{
+      display:none;
+      height: 5px;
+      width: 100%;
+      position: fixed;
+      top: 0px;
+      background-color: #cfcfcf;
+      z-index: 100000;
+      border-radius: 10px;
+    }
+    #progress-inner{
+      height: 5px;
+      width: 48%;
+      background-color: rgb(141, 141, 141);
+      border-radius: 10px;
+      margin: 0px auto;
+    }
+    #speed-tips{
+      display:none;
+      background-color: #9b9b9b;
+      position: fixed;
+      bottom: 32px;
+      left: 78px;
+      padding: 3px 5px;
+      border-radius: 50%;
+    }
+  `;
+  
+    $("body").prepend(`<style>${_cssProgress}</style>`);
+
+    let progressDiv = $(
+      '<div id="progress-outer" class="progress" ><div id="progress-inner" class="progress"></div></div>'
+    );
+    let controlDiv = $(
+      '<div id="auto-page" class="start">开始</div>'
+    );
+    let tipsDiv = $('<div id="speed-tips"></div>');
+    
+    $("#app").append(progressDiv);
+    $("#app").append(controlDiv);
+    $("#app").append(tipsDiv);
+
+    function animate(ele, target, callback) {
+      clearInterval(ele.timer);
+      ele.timer = setInterval(function () {
+        if (ele.scrollY == target) {
+          clearInterval(ele.timer);
+          callback && callback();
+        }
+        let step = (target - ele.scrollY) / 10;
+        step = step > 0 ? Math.ceil(step) : Math.floor(step);
+        window.scrollTo(0, ele.scrollY + step);
+      }, 30);
+    }
+
+    let timer = null;
+    let progressTimer = null;
+    let wait = window.localStorage.getItem("webook_speed")||30;
+
+    //抽取删除进度定时器
+    function deleteProgressTimer() {
+      clearInterval(progressTimer);
+      $("#progress-outer").hide();
+    }
+
+    $("#auto-page").on("mouseenter", function() {
+      wait = window.localStorage.getItem("webook_speed") || 30;
+      $("#speed-tips").text(wait);
+      $("#speed-tips").show("fast");
+    })
+
+    $("#auto-page").on("mouseleave", function () {
+      $("#speed-tips").hide("fast");
+    });
+
+    $("#auto-page").on("click", function () {
+      console.log("speed: "+wait);
+      timer && clearInterval(timer);
+      progressTimer && clearInterval(progressTimer);
+      if ($(this).hasClass("start")) {
+        let startTime = new Date().getTime()
+        $("#progress-outer").show();
+        progressTimer = setInterval(() => {
+          let now = new Date().getTime();
+          $("#progress-inner").css(
+            "width",
+            (now - startTime) / (wait * 10) + "%"
+          );
+        }, 50);
+        timer = setInterval(() => {
+          let wsy = window.scrollY;
+          let dch = document.documentElement.clientHeight;
+          let dsh = document.documentElement.scrollHeight;
+
+          if (wsy + dch >= dsh - 10) {
+            clearInterval(timer);
+            clearInterval(window.timer);
+            deleteProgressTimer()
+          } else {
+            let y = wsy + Math.ceil(dch / 2);
+            y = y + dch >= dsh ? dsh - dch : y;
+            animate(window, y,);
+            startTime = new Date().getTime();
+          }
+        }, wait * 1000);
+        $(this).removeClass("start");
+        $(this).addClass("stop");
+        $(this).text("停止");
+      } else {
+        deleteProgressTimer()
+        $(this).addClass("start");
+        $(this).removeClass("stop");
+        $(this).text("开始");
+      }
+    });
+}
+
 $(document).ready(function() {
   chrome.storage.local.get(["userInfo"], (function(e) {
       let o = e.userInfo && e.userInfo.vid || "";
@@ -767,16 +914,31 @@ $(document).ready(function() {
               <div id="webook_screen_2_0" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">2.0</div>
             </div>
 
+            <div id="webook_speed_title" style="margin-top: 10px; color: #c7c6c6; font-size: 13px;">速度 ${
+              window.localStorage.getItem("webook_speed") || 30
+            }</div>
+            <div id="webook_speed" style="display: flex; flex-direction: row; margin-top: 5px;">
+              <div id="webook_speed_20" speed="20" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">20</div>
+              <div id="webook_speed_30" speed="30" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">30</div>
+              <div id="webook_speed_40" speed="40" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">40</div>
+              <div id="webook_speed_50" speed="50" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">50</div>
+              <div id="webook_speed_60" speed="60" style="color: #a1a1a1; margin: 0 5px; cursor: pointer; font-size: 13px;">60</div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
-  `)
+  `);
 
 
   if (pathname.startsWith(bookPage)) {
       
     setTimeout(function() {
+      //增加翻页按钮
+      console.log('增加翻页按钮: ');
+      addAutoPage();
+
       $('.readerControls').prepend(_right_nav)
       $('body').append(_webookBox)
 
@@ -965,6 +1127,12 @@ $(document).ready(function() {
         setScreen(_def_max_width * 2.0)
         chrome.storage.local.set({'webook_screen': '2.0'})
       })
+
+      $("#webook_speed").click(function(e) {
+        let speed = e.target.getAttribute("speed")
+        window.localStorage.setItem("webook_speed", speed);
+        $("#webook_speed_title").text(`速度 ${speed}`)
+      });
       
       $("#webook_ui_default").click(function(e) {
         console.log('webook_ui_default')
