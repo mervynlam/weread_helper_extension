@@ -736,8 +736,16 @@ function addAutoPage() {
             stop()
           } else {
             let y = wsy + Math.ceil(dch / 2);
-            y = y + dch >= dsh ? dsh - dch : y;
-            animate(window, y,);
+            let cb;
+            if (y + dch >= dsh) {
+              y = dsh - dch;
+              cb = function(){
+                stop();
+                clearInterval(timer);
+                clearInterval(window.timer);
+              }
+            }
+            animate(window, y, cb);
             startTime = new Date().getTime();
           }
         }, wait * 1000);
