@@ -1136,8 +1136,10 @@ $(document).ready(function() {
 
       $("#webook_speed").click(function(e) {
         let speed = e.target.getAttribute("speed")
-        window.localStorage.setItem("webook_speed", speed);
-        $("#webook_speed_title").text(`速度 ${speed}`)
+        if (speed) {
+          window.localStorage.setItem("webook_speed", speed);
+          $("#webook_speed_title").text(`速度 ${speed}`)
+        }
       });
       
       $("#webook_ui_default").click(function(e) {
