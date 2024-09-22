@@ -960,8 +960,8 @@ $(document).ready(function() {
       $('#webook_export_note').click(function(idx, ele) {
         //var header = $('title').text().split('-').slice(0, 2).join('\n') + '\n\n'
         var info = $('title').text().split('-').slice(0, 2)
-        var title = info[0]
-        var author = info[1]
+        var title = info[0].trim()
+        var author = info[1].trim()
         var dbHref = $("#webook_douban").attr('href')
 
         if (dbHref && dbHref.length > 0) {
@@ -969,11 +969,13 @@ $(document).ready(function() {
         }
         var header = `## ${title}\n**${author}**\n\n`
 
-        var txt = ''
+        var txt = `${title} - ${author}\n\n`;
+        var md = ''
         $('.readerNoteList > .sectionListItem').each(function() {
           var titleobj = $(this).find('.sectionListItem_title')
           if (titleobj.length > 0) {
-            txt += `\n### ${titleobj[0].innerText}\n`
+            md += `\n### ${titleobj[0].innerText}\n`
+            txt += `\n------------------------------------------------------------\n${titleobj[0].innerText}\n`;
           }
 
           var noteobj = $(this).find('.sectionListItem_content')
@@ -999,30 +1001,35 @@ $(document).ready(function() {
               }
 
               if (rate.length > 0) {
-                txt += `\n> ⭐ ${rate}\n`
+                md += `\n> ⭐ ${rate}\n`
+                txt += `\n⭐ ${rate}\n`
                 if (underline.length > 0) {
-                  txt += ` 🎙 ${underline}\n`
+                  md += ` 🎙 ${underline}\n`
+                  txt += `🎙 ${underline}\n`;
                 }
               } else if (note.length > 0) {
-                txt += `\n> 🔖 ${note}\n`
+                md += `\n> 🔖 ${note}\n`
+                txt += `\n🔖 ${note}\n`;
                 if (underline.length > 0) {
-                  txt += ` 🎙 ${underline}\n`
+                  md += ` 🎙 ${underline}\n`
+                  txt += `🎙 ${underline}\n`;
                 }
               } else if (underline.length > 0) {
-                txt += `\n> 🔖 ${underline}\n`
+                md += `\n> 🔖 ${underline}\n`
+                txt += `\n🔖 ${underline}\n`
               }
             }
           }
         })
 
-        if (txt.length === 0) {
-          showToast('没发现此书的笔记')
-          return
+        if (md.length === 0) {
+          showToast("没发现此书的笔记");
+          return;
         }
 
-        copy(header + txt, 'text/plain;charset=UTF-8')
+        copy(txt, 'text/plain;charset=UTF-8')
         //showToast('👏 已成功导出笔记到剪贴板')
-        download(header + txt, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
+        download(header + md, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
         showToast('👏 已成功导出')
         
       })
