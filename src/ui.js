@@ -971,56 +971,66 @@ $(document).ready(function() {
 
         var txt = `${title} - ${author}\n\n`;
         var md = ''
-        $('.readerNoteList > .sectionListItem').each(function() {
-          var titleobj = $(this).find('.sectionListItem_title')
-          if (titleobj.length > 0) {
-            md += `\n### ${titleobj[0].innerText}\n`
-            txt += `\n------------------------------------------------------------\n${titleobj[0].innerText}\n`;
-          }
+        $(".readerNoteList > .wr_reader_note_panel_chapter_wrapper").each(
+          function () {
+            var titleobj = $(this).find(".wr_reader_note_panel_chapter_title");
+            if (titleobj.length > 0) {
+              md += `\n### ${titleobj[0].innerText}\n`;
+              txt += `\n------------------------------------------------------------\n${titleobj[0].innerText}\n`;
+            }
 
-          var noteobj = $(this).find('.sectionListItem_content')
-          if (noteobj.length > 0) {
-            for(var i=0; i<noteobj.length; i++) {
-              let rate = ''
-              let note = ''
-              let underline = ''
-              //整书评价
-              let rateobj = $(noteobj[i]).find('.wr_ratingLevelBar_text')
-              if (rateobj.length > 0) {
-                rate = rateobj[0].innerText
-              }
-              //有笔记的划线划线
-              let abstract = $(noteobj[i]).find('.abstract')
-              if (abstract.length > 0) {
-                note = abstract[0].innerText
-              }
-              //划线
-              let underlineobj = $(noteobj[i]).find('.text')
-              if (underlineobj.length > 0) {
-                underline = underlineobj[0].innerText
-              }
+            var noteobj = $(this).find(
+              ".wr_reader_note_panel_item_cell_wrapper"
+            );
+            if (noteobj.length > 0) {
+              for (var i = 0; i < noteobj.length; i++) {
+                let rate = "";
+                let note = "";
+                let underline = "";
+                //整书评价
+                let rateobj = $(noteobj[i]).find(
+                  ".wr_reader_note_panel_item_cell_content_title"
+                );
+                if (rateobj.length > 0) {
+                  rate = rateobj[0].innerText;
+                }
+                //有笔记的划线划线
+                let abstract = $(noteobj[i]).find(
+                  ".wr_reader_note_panel_item_cell_content_ref"
+                );
+                if (abstract.length > 0) {
+                  note = abstract[0].innerText;
+                }
+                //划线
+                let underlineobj = $(noteobj[i]).find(
+                  ".wr_reader_note_panel_item_cell_content_text"
+                );
+                if (underlineobj.length > 0) {
+                  underline = underlineobj[0].innerText;
+                }
 
-              if (rate.length > 0) {
-                md += `\n> ⭐ ${rate}\n`
-                txt += `\n⭐ ${rate}\n`
-                if (underline.length > 0) {
-                  md += ` 🎙 ${underline}\n`
-                  txt += `🎙 ${underline}\n`;
+                if (rate.length > 0) {
+                  md += `\n> ⭐ ${rate}\n`;
+                  txt += `\n⭐ ${rate}\n`;
+                  if (underline.length > 0) {
+                    md += ` 🎙 ${underline}\n`;
+                    txt += `🎙 ${underline}\n`;
+                  }
+                } else if (note.length > 0) {
+                  md += `\n> 🔖 ${note}\n`;
+                  txt += `\n🔖 ${note}\n`;
+                  if (underline.length > 0) {
+                    md += ` 🎙 ${underline}\n`;
+                    txt += `🎙 ${underline}\n`;
+                  }
+                } else if (underline.length > 0) {
+                  md += `\n> 🔖 ${underline}\n`;
+                  txt += `\n🔖 ${underline}\n`;
                 }
-              } else if (note.length > 0) {
-                md += `\n> 🔖 ${note}\n`
-                txt += `\n🔖 ${note}\n`;
-                if (underline.length > 0) {
-                  md += ` 🎙 ${underline}\n`
-                  txt += `🎙 ${underline}\n`;
-                }
-              } else if (underline.length > 0) {
-                md += `\n> 🔖 ${underline}\n`
-                txt += `\n🔖 ${underline}\n`
               }
             }
           }
-        })
+        );
 
         if (md.length === 0) {
           showToast("没发现此书的笔记");
@@ -1028,9 +1038,9 @@ $(document).ready(function() {
         }
 
         copy(txt, 'text/plain;charset=UTF-8')
-        //showToast('👏 已成功导出笔记到剪贴板')
-        download(header + md, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
-        showToast('👏 已成功导出')
+        showToast('👏 已成功导出笔记到剪贴板')
+        // download(header + md, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
+        // showToast('👏 已成功导出')
         
       })
 
