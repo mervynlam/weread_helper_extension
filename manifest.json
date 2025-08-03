@@ -18,7 +18,6 @@
   },
   "permissions": [
     "storage",
-    "tts",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
     "tabs"

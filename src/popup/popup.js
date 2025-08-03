@@ -73,15 +73,32 @@ chrome.storage.local.get(['userInfo', 'userShelf', 'userCardSummary', 'totalRead
 
   if (userInfo && userInfo.vid) {
     console.log('**storage**', userInfo)
-    let _ui = $(`
+    let _ui = $(
+      `
     <a style="display: flex; flex-direction: row; justify-content: left; align-items: center;" href="https://weread.qq.com/" target="_blank">
-      ${(userInfo.avatar && userInfo.avatar.length > 0) ? `<img src="${userInfo.avatar}" style="width: 20px; height: 20px; border-radius: 20px;" />` : `<div style="width: 20px; height: 20px; background-color: #e4e4e4; border-radius: 20px;"></div>`}
-      <span style="margin-left: 5px; text-decoration: none; cursor: pointer; color: #259;">${userInfo.name}</span>
-    </a>` + `<div style="margin-top: 5px; color: #5d646e;">vid: ${userInfo.vid}</div>
-    ${remainday >= 0 ? `<div style="margin-top: 5px; color: #5d646e;">无限卡剩余: <span style="font-weight: bold;">${remainday}</span> 天</div>` : ''}
-    <div style="margin-top: 5px; color: #5d646e;">本周阅读时长: ${getReadTimeStr(totalReadTime)}</div>
-    <div style="margin-top: 5px; color: #5d646e;">书架: <a href="shelf.html" style="margin: 0 3px;">${book_count}</a>本</div>
-    `)
+      ${
+        userInfo.avatar && userInfo.avatar.length > 0
+          ? `<img src="${userInfo.avatar}" style="width: 20px; height: 20px; border-radius: 20px;" />`
+          : `<div style="width: 20px; height: 20px; background-color: #e4e4e4; border-radius: 20px;"></div>`
+      }
+      <span style="margin-left: 5px; text-decoration: none; cursor: pointer; color: #259;">${
+        userInfo.name
+      }</span>
+    </a>` +
+        `<div style="margin-top: 5px; color: #5d646e;">vid: ${
+          userInfo.vid
+        }</div>
+    ${
+      remainday >= 0
+        ? `<div style="margin-top: 5px; color: #5d646e;">无限卡剩余: <span style="font-weight: bold;">${remainday}</span> 天</div>`
+        : ""
+    }
+    <div style="margin-top: 5px; color: #5d646e;">本周阅读时长: ${getReadTimeStr(
+      totalReadTime
+    )}</div>
+    <div style="margin-top: 5px; color: #5d646e;">书架: ${book_count}本</div>
+    `
+    );
     $('#webook_user_info').prepend(_ui)
 
   } else {
