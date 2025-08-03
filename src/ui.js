@@ -1039,7 +1039,7 @@ $(document).ready(function() {
 
         copy(txt, 'text/plain;charset=UTF-8')
         showToast('👏 已成功导出笔记到剪贴板')
-        // download(header + md, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
+        download(header + md, "".concat(info.join(' - '), ".md"), 'text/txt;charset=utf-8')
         // showToast('👏 已成功导出')
         
       })

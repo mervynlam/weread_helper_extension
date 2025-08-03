@@ -1,7 +1,7 @@
 {
   "name": "微信读书助手 - Mervyn",
-  "version": "0.0.1",
-  "manifest_version": 2,
+  "version": "0.0.2",
+  "manifest_version": 3,
   "description": "查看公众号、管理书架、设置阅读页面 UI",
   "homepage_url": "https://weread.qq.com",
   "icons": {
@@ -11,26 +11,32 @@
   },
   "default_locale": "zh_CN",
   "background": {
-    "page": "src/bg/background.html",
-    "persistent": true
+    "service_worker": "src/bg/background.js"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "src/popup/popup.html"
   },
   "permissions": [
     "storage",
-    "webRequest",
-    "webRequestBlocking",
     "tts",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "tabs"
+  ],
+  "host_permissions": [
     "*://i.weread.qq.com/*",
     "*://weread.qq.com/*",
     "*://r.qq.com/*",
     "*://*.file.myqcloud.com/*"
   ],
-  "content_scripts": [{
-    "run_at": "document_end",
-    "matches": ["*://weread.qq.com/*"],
-    "js": ["assets/js/jquery.min.js", "assets/js/lodash.min.js", "src/ui.js"]
-  }],
-  "content_security_policy": "script-src 'self' 'sha256-NeK5uABt0EHXknKz0Fuhb7a5Zbb44aQ0yGE+wP/uoBo='; object-src 'self'"
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "matches": ["*://weread.qq.com/*"],
+      "js": ["assets/js/jquery.min.js", "assets/js/lodash.min.js", "src/ui.js"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }
