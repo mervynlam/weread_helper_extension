@@ -676,16 +676,6 @@ function addAutoPage() {
 }
 
 $(document).ready(function() {
-  chrome.storage.local.get(["userInfo"], (function(e) {
-      let o = e.userInfo && e.userInfo.vid || "";
-      $.get({
-          url: `https://webook.qnmlgb.tech/info?v=${version}`,
-          headers: {
-              vid: o
-          }
-      })
-  }
-  ))
   for (var i = 1; i < 99999; i++) {
      window.clearInterval(i);
   }
@@ -961,49 +951,47 @@ $(document).ready(function() {
         
       })
 
-      $('#webook_player').click(function() {
-        let _content = document.body.getAttribute('data-bbq') + gettext()
-        if (_content.length > 0) {
-          chrome.runtime.sendMessage({text: _content, action: 'speakText'}, function(resp) {
-            showToast('👏 开始播放')
-          })
-        } else {
-          showToast('没找到本章的内容')
-        }
-      })
-
-      $('#webook_player_pause').click(function() {
-        chrome.runtime.sendMessage({text: '', action: 'pauseText'}, function(resp) {})
-      })
-
-      $('#webook_player_continue').click(function() {
-        chrome.runtime.sendMessage({text: '', action: 'continueText'}, function(resp) {})
-      })
-
-      $('#webook_player_stop').click(function() {
-        chrome.runtime.sendMessage({text: '', action: 'stopText'}, function(resp) {})
-      })
-
       function getBook(){
+        let jsonText = $('script[type="application/ld+json"]').html();
+
+        // 解析 JSON
+        let data = JSON.parse(jsonText);
+
+        // 提取字段
+        let isbn = data.isbn;
+        let name = data.name;
+
         let vid = ''
         chrome.storage.local.get(["userInfo"], (function(e) {
           vid = e.userInfo && e.userInfo.vid || "";
         }));
         let bookId = pathname.slice(pathname.lastIndexOf('/')+1)
-        $.get({
-          url: `https://webook.qnmlgb.tech/mp2db?code=${bookId}`,
-          headers: {
-            vid: vid,
-            version: version
-          }
-        }).then(res => {
-          if (res.db) {
-            $("#webook_douban").text(`豆瓣评分 ${res.db.rating.num}`)
-            $("#webook_douban").attr("href", res.db.url)
+        chrome.runtime.sendMessage({ action: "searchDouban",isbn }, (response) => {
+          // const html = response.text()
+          const match = response.data.match(
+            /window\.__DATA__\s*=\s*(\{[\s\S]*?\})(?:\s*;|\s+window)/
+          );
+
+          if (match && match[1]) {
+            try {
+              // 解析 JSON 数据
+              const jsonData = JSON.parse(match[1]);
+              console.log("成功提取到 DATA 对象:", jsonData);
+
+              $("#webook_douban").text(
+                `豆瓣评分 ${jsonData.items[0].rating.value}`
+              );
+              $("#webook_douban").attr("href", jsonData.items[0].url);
+            } catch (e) {
+              console.error("解析 JSON 出错:", e);
+              $("#webook_douban").hide();
+            }
           } else {
-            $("#webook_douban").hide()
+            console.log(html);
+            console.warn("未找到 window.__DATA__ 对象");
+            $("#webook_douban").hide();
           }
-        })
+        });
       }
       getBook()
 

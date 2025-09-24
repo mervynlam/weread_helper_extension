@@ -20,13 +20,16 @@
     "storage",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "tabs"
+    "tabs",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "host_permissions": [
     "*://i.weread.qq.com/*",
     "*://weread.qq.com/*",
     "*://r.qq.com/*",
-    "*://*.file.myqcloud.com/*"
+    "*://*.file.myqcloud.com/*",
+    "https://search.douban.com/*"
   ],
   "content_scripts": [
     {

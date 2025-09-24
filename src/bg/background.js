@@ -285,7 +285,6 @@ var _init = function () {
 
 _init()
 
-
 chrome.webRequest.onBeforeSendHeaders.addListener(function (obj) {
   let bookid = obj.url.replace('https://weread.qq.com/web/book/bookmarklist?bookId=', '').replace('&type=1', '')
   for (var i = 0; i < obj.requestHeaders.length; ++i) {
@@ -337,6 +336,25 @@ function callbackMsg(payload) {
 
 function sendMsg(payload, tab) {
   chrome.tabs.sendMessage(tab.id, payload, function(response) {
-    console.log(response)
+    console.log(response);
   })
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "searchDouban") {
+    fetch(
+      `https://search.douban.com/book/subject_search?search_text=${message.isbn}&cat=1001`,
+      {
+        headers: {
+          Accept: "text/html,*/*",
+          "Accept-Language": "zh-CN,zh;q=0.9",
+          Referer: "https://search.douban.com",
+        },
+      }
+    )
+      .then((res) => res.text())
+      .then((data) => sendResponse({ data }))
+      .catch((err) => sendResponse({ error: err }));
+    return true; // 表示异步 response
+  }
+});
